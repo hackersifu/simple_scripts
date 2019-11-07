@@ -6,4 +6,3 @@ webpagescript.py - runs through multiple web pages for the purpose of testing ne
 hackersifu_decoder.py - a simple decoder for base64 strings
 
 hackersifu_s3lockdown.py - a heavy handed lockdown Lambda script for AWS S3 buckets
-    trigger.json - the configuration trigger needed within the Lambda function
