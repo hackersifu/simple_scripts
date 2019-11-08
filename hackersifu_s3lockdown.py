@@ -3,7 +3,7 @@ import json
 import sys
 
 def lambda_handler(event, context):
-    # The following code relies on a trigger.
+    # The following code can be invoked by a trigger or manually.
     s3 = boto3.resource('s3')
     client = boto3.client('s3')
     for bucket in s3.buckets.all():
