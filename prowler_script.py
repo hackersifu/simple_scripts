@@ -18,5 +18,5 @@ print("The prerequisites should be configured. Moving on to running Prowler, and
 time.sleep(1)
 os.system("cd prowler && sudo ./prowler -M csv")
 print("Check the prowler directory to find the csv file. Thanks!")
-#Test 22
+#Test 222
 sys.exit()
