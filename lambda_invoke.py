@@ -1,24 +1,19 @@
 import boto3
-from datetime import datetime, timedelta
+from datetime import datetime
 
-# Define the list of regions
+# List of regions. Recommend to modify.
 region_list = ['us-east-1', 'us-east-2', 'us-west-1', 'us-west-2']
 
 def get_lambda_first_invocation_time(function_name, aws_region, lookback_days):
     """Function to get the last invocation time for each Lambda function."""
     logs_client = boto3.client('logs', region_name=aws_region)
     try:
-        # Get the function's CloudWatch log group
         log_group_name = f"/aws/lambda/{function_name}"
-        
-        # Calculate start time based on lookback days
         start_time = int((datetime.now().timestamp() - (lookback_days * 86400)) * 1000)
-
-        # Use filter_log_events to find the last log event for the function
         response = logs_client.filter_log_events(
             logGroupName=log_group_name,
             limit=1,
-            startTime=start_time,  # Customizable lookback period
+            startTime=start_time, 
             interleaved=True
         )
         
