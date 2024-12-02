@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 # Define the list of regions
 region_list = ['us-east-1', 'us-east-2', 'us-west-1', 'us-west-2']
 
-def get_lambda_last_invocation_time(function_name, aws_region, lookback_days):
+def get_lambda_first_invocation_time(function_name, aws_region, lookback_days):
     """Function to get the last invocation time for each Lambda function."""
     logs_client = boto3.client('logs', region_name=aws_region)
     try:
@@ -23,8 +23,8 @@ def get_lambda_last_invocation_time(function_name, aws_region, lookback_days):
         )
         
         if response['events']:
-            last_invocation_time = response['events'][0]['timestamp']
-            return datetime.utcfromtimestamp(last_invocation_time / 1000).strftime('%Y-%m-%d %H:%M:%S')
+            first_invocation_time = response['events'][0]['timestamp']
+            return datetime.utcfromtimestamp(first_invocation_time / 1000).strftime('%Y-%m-%d %H:%M:%S')
         else:
             return f"No recent invocations (looking back {lookback_days} days)"
     
@@ -42,10 +42,10 @@ def list_lambda_functions(aws_region, lookback_days):
     for page in response_iterator:
         for function in page['Functions']:
             function_name = function['FunctionName']
-            last_invocation_time = get_lambda_last_invocation_time(function_name, aws_region, lookback_days)
+            first_invocation_time = get_lambda_first_invocation_time(function_name, aws_region, lookback_days)
             lambda_functions.append({
                 'FunctionName': function_name,
-                'LastInvocationTime': last_invocation_time,
+                'FirstInvocationTime': first_invocation_time,
                 'Region': aws_region
             })
     
@@ -67,11 +67,11 @@ def main():
         lambda_functions = list_lambda_functions(aws_region, lookback_days)
         all_lambda_functions.extend(lambda_functions)
 
-    print(f"{'FunctionName':<50}{'LastInvocationTime':<30}{'Region'}")
+    print(f"{'FunctionName':<50}{'FirstInvocationTime':<30}{'Region'}")
     print("-" * 90)
 
     for function in all_lambda_functions:
-        print(f"{function['FunctionName']:<50}{function['LastInvocationTime']:<30}{function['Region']}")
+        print(f"{function['FunctionName']:<50}{function['FirstInvocationTime']:<30}{function['Region']}")
 
 if __name__ == '__main__':
     main()
