@@ -12,3 +12,11 @@ tell application "System Events"
     key up control
 end tell
 EOF
+
+#!/bin/bash
+
+# Create a new space on the current display
+yabai -m space --create
+
+# Focus the newly created space
+yabai -m space --focus recent
