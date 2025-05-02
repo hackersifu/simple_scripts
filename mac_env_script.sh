@@ -1,22 +1,12 @@
 #!/bin/bash
 
-# Open Mission Control and simulate a keystroke to add a new desktop
 osascript <<EOF
 tell application "System Events"
-    key down control
-    key code 126 -- Up arrow for Mission Control
-    delay 0.5
-    key code 124 -- Right arrow to go to the end
-    delay 0.5
-    key code 44 using {control down} -- Press Control + Right to move to new space
-    key up control
+    set appList to name of every process whose background only is false and name is not "Finder"
+    repeat with appName in appList
+        try
+            tell application appName to quit
+        end try
+    end repeat
 end tell
 EOF
-
-#!/bin/bash
-
-# Create a new space on the current display
-yabai -m space --create
-
-# Focus the newly created space
-yabai -m space --focus recent
