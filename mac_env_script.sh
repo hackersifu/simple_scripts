@@ -1,27 +1,22 @@
 #!/bin/bash
 
-osascript <<EOF
+echo "Force-closing all user applications..."
+
+# Get all visible GUI apps (excluding Finder and Terminal)
+apps_to_kill=$(osascript <<'EOF'
 tell application "System Events"
-    set appList to name of every process whose background only is false and name is not "Finder"
-    repeat with appName in appList
-        try
-            tell application appName to quit
-        end try
-    end repeat
+    set appList to name of every application process where background only is false
 end tell
+return appList
 EOF
+)
 
-osascript <<'END'
-tell application "System Events"
-    set appsToClose to (name of every application process where background only is false) ¬
-        whose name is not "Finder" and name is not "Terminal"
-    repeat with appName in appsToClose
-        try
-            tell application appName to quit
-        end try
-    end repeat
-end tell
-END
+# Loop through each app and kill it (except Terminal and Finder)
+while IFS= read -r app; do
+    if [[ "$app" != "Finder" && "$app" != "Terminal" ]]; then
+        echo "Killing $app"
+        killall "$app" 2>/dev/null
+    fi
+done <<< "$apps_to_kill"
 
-# Optional: wait for a moment to let apps close cleanly
-sleep 3
+sleep 2
